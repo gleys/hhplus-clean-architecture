@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LectureTest {
 
@@ -16,9 +15,9 @@ class LectureTest {
     void 예약_인원이_찼으면_예외를_던진다() {
         //given
         List<Reservation> reservations = new ArrayList<>();
-        Reservation newReservation = new Reservation(11);
+        Reservation newReservation = new Reservation(11, 1);
         for (int i = 0; i <10 ; i++) {
-            reservations.add(new Reservation(i));
+            reservations.add(new Reservation(i, 1));
         }
         Lecture lecture = new Lecture(LocalDateTime.now(), 10, reservations);
 
@@ -32,9 +31,9 @@ class LectureTest {
     void 예약_인원이_충분하면_예약_성공() {
         //given
         List<Reservation> reservations = new ArrayList<>();
-        Reservation newReservation = new Reservation(10);
+        Reservation newReservation = new Reservation(10, 1);
         for (int i = 0; i <9 ; i++) {
-            reservations.add(new Reservation(9));
+            reservations.add(new Reservation(i, 1));
         }
         Lecture lecture = new Lecture(LocalDateTime.now(), 10, reservations);
 
@@ -43,6 +42,24 @@ class LectureTest {
 
         // then
         assertThat(reservations.size()).isEqualTo(10);
+    }
+
+    @Test
+    void 중복_수강_신청_하면_예외를_던진다() {
+        //given
+        List<Reservation> reservations = new ArrayList<>();
+        Reservation newReservation = new Reservation(8, 1);
+        for (int i = 0; i <9 ; i++) {
+            reservations.add(new Reservation(i, 1));
+        }
+        Lecture lecture = new Lecture(LocalDateTime.now(), 10, reservations);
+
+        // when & then
+        assertThatThrownBy(() -> lecture.reserve(newReservation))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageMatching("이미 수강신청 했습니다.");
+
+
     }
 
     @Test
@@ -60,9 +77,9 @@ class LectureTest {
     void 자신의_수강_내역이_없을_때_취소시_예외를_던진다() {
         // given
         List<Reservation> reservations = new ArrayList<>();
-        Reservation newReservation = new Reservation(12);
+        Reservation newReservation = new Reservation(12, 1);
         for (int i = 0; i <10 ; i++) {
-            reservations.add(new Reservation(i));
+            reservations.add(new Reservation(i, 1));
         }
         Lecture lecture = new Lecture(LocalDateTime.now(), 10, reservations);
 
@@ -77,7 +94,7 @@ class LectureTest {
         // given
         List<Reservation> reservations = new ArrayList<>();
         for (int i = 0; i <10 ; i++) {
-            reservations.add(new Reservation(i));
+            reservations.add(new Reservation(i, 1));
         }
         Lecture lecture = new Lecture(LocalDateTime.now(), 10, reservations);
 
@@ -90,8 +107,5 @@ class LectureTest {
                .anyMatch(reservation -> reservation.isMyReservation(8)))
                 .isEqualTo(false);
     }
-
-
-
 
 }
