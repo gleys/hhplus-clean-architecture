@@ -7,7 +7,9 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(exclude = "id")
+import java.time.LocalDateTime;
+
+@EqualsAndHashCode(exclude = {"id", "createdAt"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Reservation {
@@ -20,9 +22,12 @@ public class Reservation {
 
     private long userId;
 
-    public Reservation(final long userId, final long lectureId) {
+    private LocalDateTime createdAt;
+
+    public Reservation(final long userId, final long lectureId, final LocalDateTime now) {
         this.userId = userId;
         this.lectureId = lectureId;
+        this.createdAt = now;
     }
 
     public boolean isMyReservation(final long userId) {

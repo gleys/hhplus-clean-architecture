@@ -17,7 +17,6 @@ public class Lecture {
     private long id;
     private LocalDateTime startedAt;
     private long capacity;
-
     @OneToMany
     private List<Reservation> reservations;
 
@@ -35,6 +34,7 @@ public class Lecture {
 
         reservations.remove(getTargetReservation(userId).get());
     }
+
 
     public Lecture(final LocalDateTime startedAt, final long capacity, final List<Reservation> reservations) {
         this.startedAt = startedAt;
